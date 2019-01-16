@@ -9,7 +9,12 @@ exports.bLight = true;
 exports.amount = "10000000000000000000";
 exports.storage = 'sqlite';
 
+//局部全節點地址
 exports.localFullNode = "18.191.18.104:30003";
+
+exports.words = "enroll mammal token pioneer creek clap toss enroll tenant else grit twin";
+exports.passphrase = "";
+
 
 exports.WS_PROTOCOL = 'ws://';
 // exports.hub = '192.168.5.149:8286';

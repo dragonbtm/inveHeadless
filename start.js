@@ -19,8 +19,11 @@ var appDataDir = desktopApp.getAppDataDir();
 var KEYS_FILENAME = appDataDir + '/' + (conf.KEYS_FILENAME || 'keys.json');
 var wallet_id;
 var xPrivKey;
-var passphrase = "";
-var priKey = []
+
+var priKey = [];
+
+var passphrase = conf.passphrase;
+var words = conf.words;
 
 
 function replaceConsoleLog(){
@@ -60,7 +63,8 @@ function readKeys(onDone){
 					var deviceTempPrivKey = crypto.randomBytes(32);
 					var devicePrevTempPrivKey = crypto.randomBytes(32);
 
-					var mnemonic = new Mnemonic(); // generates new mnemonic
+
+					var mnemonic = words ? new Mnemonic(words) : new Mnemonic(); // generates new mnemonic
 					while (!Mnemonic.isValid(mnemonic.toString()))
 						mnemonic = new Mnemonic();
 
@@ -565,7 +569,7 @@ function signMessage(signing_address, message, cb) {
 
 
 function handleText(from_address, text, onUnknown){
-	
+
 	text = text.trim();
 	var fields = text.split(/ /);
 	var command = fields[0].trim().toLowerCase();
@@ -586,13 +590,13 @@ function handleText(from_address, text, onUnknown){
 					device.sendMessageToDevice(from_address, 'text', addressInfo.address);
 				});
 			break;
-			
+
 		case 'balance':
 			prepareBalanceText(function(balance_text){
 				device.sendMessageToDevice(from_address, 'text', balance_text);
 			});
 			break;
-			
+
 		case 'pay':
 			analyzePayParams(params[0], params[1], function(asset, amount){
 				if(asset===null && amount===null){

@@ -1,6 +1,6 @@
 {
-  "name": "inve",
-  "description": "inve",
+  "name": "inveHeadless",
+  "description": "inveinveHeadless",
   "author": "inve",
   "version": "0.1.9",
   "main": "start.js",
