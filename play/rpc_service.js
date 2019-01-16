@@ -78,74 +78,81 @@ function initRPC() {
 
 		//限制每天領取次數
 		let key = toAddress + now;
-		client.get(key,(err,reply)=> {
-			if(err) {
-				console.log(JSON.stringify(err))
-			}else {
-				console.log(JSON.stringify(reply))
-			}
-		});
 
 
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress)){
 				mutex.lock(['rpc_getnewaddress'], function(unlock){
-					walletDefinedByKeys.issueAddress(wallet_id, 0, 0, function(addressInfo) {
-						let fromAddress = addressInfo.address;
-						//構造交易結構
-						var obj = {
-							fromAddress: fromAddress,
-							toAddress: toAddress,
-							amount: amount,
-							timestamp,
-							remark :note,
-							vers:messageVersion
-						};
-						findAddressForJoint(fromAddress,(address)=>{
-							obj.pubkey = address.definition[1].pubkey;
-							obj.type = 1;
+                    client.get(key,(err,reply)=> {
+                        if(err) {
+                            console.log(JSON.stringify(err))
+                        }else {
+                        	if(reply) {
+                        		cb("the address have to received ~!");
+                                unlock();
+							}else {
+                                walletDefinedByKeys.issueAddress(wallet_id, 0, 0, function(addressInfo) {
+                                    let fromAddress = addressInfo.address;
+                                    //構造交易結構
+                                    var obj = {
+                                        fromAddress: fromAddress,
+                                        toAddress: toAddress,
+                                        amount: amount,
+                                        timestamp,
+                                        remark :note,
+                                        vers:messageVersion
+                                    };
+                                    findAddressForJoint(fromAddress,(address)=>{
+                                        obj.pubkey = address.definition[1].pubkey;
+                                        obj.type = 1;
 
-							obj.fee = getStrLeng(JSON.stringify(obj));
+                                        obj.fee = getStrLeng(JSON.stringify(obj));
 
-							//获取签名的BUF
-							var buf_to_sign = require("core/object_hash").getUnitHashToSign(obj);
+                                        //获取签名的BUF
+                                        var buf_to_sign = require("core/object_hash").getUnitHashToSign(obj);
 
-							headlessWallet.signWithLocalPrivateKey(wallet_id,0,0,0,buf_to_sign,(signature)=>{
+                                        headlessWallet.signWithLocalPrivateKey(wallet_id,0,0,0,buf_to_sign,(signature)=>{
 
-								obj.signature = signature;
-
-
-								let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
-								console.log("==========result",flag)
-
-								hashnethelper.sendMessageTry(obj,(err,res)=>{
-
-									if(err) {
-										cb(err,"faild")
-									}else{
-										var res = JSON.parse(res);
-										if(res.code == 200) {
-											cb(null,signature);
-										}else {
-											cb(res.data,"faild");
-										}
-
-									}
-
-									unlock();
-								});
+                                            obj.signature = signature;
 
 
+                                            let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
+                                            console.log("==========result",flag)
 
-							});
+                                            hashnethelper.sendMessageTry(obj,(err,res)=>{
+
+                                                if(err) {
+                                                    cb(err,"faild");
+                                                }else{
+                                                    var res = JSON.parse(res);
+                                                    if(res.code == 200) {
+                                                        client.set(key,signature,redis.print);
+                                                        cb(null,signature);
+                                                    }else {
+                                                        cb(res.data,"faild");
+                                                    }
+
+                                                }
+                                                unlock();
+                                            });
 
 
-						});
+
+                                        });
+
+
+                                    });
 
 
 
 
-					});
+                                });
+
+							}
+                        }
+                    });
+
+
 				});
 
 			}
