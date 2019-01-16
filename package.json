@@ -27,6 +27,7 @@
     "bitcore-mnemonic": "~1.0.0",
     "json-rpc2": "^1.0.2",
     "superagent": "^3.8.3",
-	"redis":"^2.8.0"
+    "redis": "^2.8.0",
+    "moment": "^2.23.0"
   }
 }

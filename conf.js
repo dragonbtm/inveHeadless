@@ -12,8 +12,14 @@ exports.storage = 'sqlite';
 //局部全節點地址
 exports.localFullNode = "18.191.18.104:30003";
 
+//配置錢包
 exports.words = "enroll mammal token pioneer creek clap toss enroll tenant else grit twin";
 exports.passphrase = "";
+
+//redis配置信息
+exports.redisIP   = "localhost";
+exports.redisPORT = "6379";
+
 
 
 exports.WS_PROTOCOL = 'ws://';

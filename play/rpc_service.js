@@ -13,6 +13,14 @@ var validationUtils = require("core/validation_utils.js");
 var hashnethelper = require("./hashnethelper")
 var wallet_id;
 
+
+
+
+var redis = require("redis");
+var client  = redis.createClient('6379', '127.0.0.1');
+
+
+
 if (conf.bSingleAddress)
 	throw Error('can`t run in single address mode');
 
@@ -25,9 +33,21 @@ function initRPC() {
 	var Wallet = require('core/wallet.js');
 	var balances = require('core/balances.js');
 
+
+    const moment = require("moment");
+
+    client.on("error", function(error) {
+        console.log(error);
+    });
+
+    client.on('ready', function(res){
+    	console.log('redis is already')
+    });
+
+
 	var server = rpc.Server.$create({
-		'websocket': true, // is true by default 
-		'headers': { // allow custom headers is empty by default 
+		'websocket': true, // is true by default
+		'headers': { // allow custom headers is empty by default
 			'Access-Control-Allow-Origin': '*'
 		}
 	});
@@ -48,6 +68,7 @@ function initRPC() {
 
 		console.log('sendtoaddress '+JSON.stringify(args));
 		let start_time = Date.now();
+        let now = moment().format("YYYY-MM-DD");
 
 		let amount = conf.amount;
 		let toAddress = args[0];
@@ -55,10 +76,19 @@ function initRPC() {
 		var timestamp = Math.round(Date.now());
 		var messageVersion ="1.0.0dev";
 
+		//限制每天領取次數
+		let key = toAddress + now;
+		client.get(key,(err,reply)=> {
+			if(err) {
+				console.log(JSON.stringify(err))
+			}else {
+				console.log(JSON.stringify(reply))
+			}
+		});
+
 
 		if (amount && toAddress) {
 			if (validationUtils.isValidAddress(toAddress)){
-
 				mutex.lock(['rpc_getnewaddress'], function(unlock){
 					walletDefinedByKeys.issueAddress(wallet_id, 0, 0, function(addressInfo) {
 						let fromAddress = addressInfo.address;
@@ -87,7 +117,6 @@ function initRPC() {
 
 								let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
 								console.log("==========result",flag)
-
 
 								hashnethelper.sendMessageTry(obj,(err,res)=>{
 
@@ -129,7 +158,7 @@ function initRPC() {
 
 	headlessWallet.readSingleWallet(function(_wallet_id) {
 		wallet_id = _wallet_id;
-		// listen creates an HTTP server on localhost only 
+		// listen creates an HTTP server on localhost only
 		var httpServer = server.listen(conf.rpcPort, conf.rpcInterface);
 		httpServer.timeout = 900*1000;
 	});
