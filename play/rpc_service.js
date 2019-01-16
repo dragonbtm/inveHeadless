@@ -17,8 +17,8 @@ var wallet_id;
 
 
 var redis = require("redis");
-var client  = redis.createClient('6379', '127.0.0.1');
-
+var client  = redis.createClient(conf.redisPORT, conf.redisIP);
+conf.redisAUTH ? client.auth(conf.redisAUTH) : null;
 
 
 if (conf.bSingleAddress)

@@ -6,7 +6,8 @@
 exports.bServeAsHub = false;
 exports.bLight = true;
 
-exports.amount = "10000000000000000000";
+const unit = "000000000000000000";
+exports.amount = "100" + unit;
 exports.storage = 'sqlite';
 
 //局部全節點地址
@@ -18,7 +19,8 @@ exports.passphrase = "";
 
 //redis配置信息
 exports.redisIP   = "localhost";
-exports.redisPORT = "6379";
+exports.redisPORT = "1000";
+exports.redisAUTH = "alsdnvals/dfjawei9fsdfnas123324235";
 
 
 
