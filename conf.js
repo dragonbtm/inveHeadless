@@ -19,7 +19,7 @@ exports.passphrase = "";
 
 //redis配置信息
 exports.redisIP   = "localhost";
-exports.redisPORT = "1000";
+exports.redisPORT = "10000";
 exports.redisAUTH = "alsdnvals/dfjawei9fsdfnas123324235";
 
 
