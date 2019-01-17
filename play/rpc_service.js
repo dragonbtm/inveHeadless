@@ -88,7 +88,7 @@ function initRPC() {
                             console.log(JSON.stringify(err))
                         }else {
                         	if(reply) {
-                        		cb("the address have to received ~!");
+                        		cb("the address have to received");
                                 unlock();
 							}else {
                                 walletDefinedByKeys.issueAddress(wallet_id, 0, 0, function(addressInfo) {
@@ -115,13 +115,13 @@ function initRPC() {
 
                                             obj.signature = signature;
 
-
                                             let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
                                             console.log("==========result",flag)
 
                                             hashnethelper.sendMessageTry(obj,(err,res)=>{
 
                                                 if(err) {
+                                                	console.log(err);
                                                     cb(err,"faild");
                                                 }else{
                                                     var res = JSON.parse(res);
@@ -129,7 +129,8 @@ function initRPC() {
                                                         client.set(key,signature,redis.print);
                                                         cb(null,signature);
                                                     }else {
-                                                        cb(res.data,"faild");
+                                                    	console.log(res.data);
+                                                        cb("faild");
                                                     }
 
                                                 }
