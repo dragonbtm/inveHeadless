@@ -88,7 +88,8 @@ function initRPC() {
                             console.log(JSON.stringify(err))
                         }else {
                         	if(reply) {
-                        		cb("the address have to received");
+                        		let data = {msg:"the address have to received",time:reply};
+                        		cb(JSON.stringify(data));
                                 unlock();
 							}else {
                                 walletDefinedByKeys.issueAddress(wallet_id, 0, 0, function(addressInfo) {
@@ -126,7 +127,7 @@ function initRPC() {
                                                 }else{
                                                     var res = JSON.parse(res);
                                                     if(res.code == 200) {
-                                                        client.set(key,signature,redis.print);
+                                                        client.set(key,start_time,redis.print);
                                                         cb(null,signature);
                                                     }else {
                                                     	console.log(res.data);
