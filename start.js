@@ -227,7 +227,11 @@ function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, t
 	var path = "m/44'/0'/" + account + "'/"+is_change+"/"+address_index;
 	var privateKey = xPrivKey.derive(path).privateKey;
 	var privKeyBuf = privateKey.bn.toBuffer({size:32}); // https://github.com/bitpay/bitcore-lib/issues/47
-	handleSig(ecdsaSig.sign(text_to_sign, privKeyBuf));
+    var path2 = "m/44'/0'/0'";
+    var privateKey2 = xPrivKey.derive(path2);
+    var xpubkey = Bitcore.HDPublicKey(privateKey2).xpubkey;
+    var pubkey = derivePubkey(xpubkey ,"m/0/0");
+	handleSig(ecdsaSig.sign(text_to_sign, privKeyBuf),pubkey);
 }
 
 var signer = {

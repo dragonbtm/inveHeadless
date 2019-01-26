@@ -112,14 +112,14 @@ function initRPC() {
                                         //获取签名的BUF
                                         var buf_to_sign = require("core/object_hash").getUnitHashToSign(obj);
 
-                                        headlessWallet.signWithLocalPrivateKey(wallet_id,0,0,0,buf_to_sign,(signature)=>{
+                                        headlessWallet.signWithLocalPrivateKey(wallet_id,0,0,0,buf_to_sign,(signature,pubkey)=>{
 
                                             obj.signature = signature;
 
                                             let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
                                             console.log("==========result",flag)
 
-                                            hashnethelper.sendMessageTry(obj,(err,res)=>{
+                                            hashnethelper.sendMessageTry(obj,pubkey,(err,res)=>{
 
                                                 if(err) {
                                                 	console.log(err);
