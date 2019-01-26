@@ -44,13 +44,25 @@ function initRPC() {
     	console.log('redis is already')
     });
 
+    /*
+    * 	res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+		res.setHeader("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+		res.setHeader("X-Powered-By",' 3.2.1');
+		res.setHeader("Content-Type", "text/html");
+    * */
 
 	var server = rpc.Server.$create({
 		'websocket': true, // is true by default
 		'headers': { // allow custom headers is empty by default
-			'Access-Control-Allow-Origin': '*'
+			'Access-Control-Allow-Origin': '*',
+            "Access-Control-Allow-Headers":"X-Requested-With",
+            "Access-Control-Allow-Methods":"PUT,POST,GET,DELETE,OPTIONS",
+            "X-Powered-By":' 3.2.1',
+            "Content-Type":"text/html"
 		}
 	});
+
 
 
 	server.expose('getaddress', function(args, opt, cb) {
