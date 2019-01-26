@@ -13,6 +13,7 @@ class WebHelper {
                 .end(function (err, res) {
                     if (err) {
                         reject(err);
+                        cb(err);
                         return;
                     }
                     // console.log(JSON.stringify(res.text));
@@ -36,6 +37,7 @@ class WebHelper {
                 .end(function (err, res) {
                     if (err) {
                         reject(err);
+                        cb(err);
                         return;
                     }
                     if(cb != null){

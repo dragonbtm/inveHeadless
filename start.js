@@ -234,6 +234,11 @@ function signWithLocalPrivateKey(wallet_id, account, is_change, address_index, t
 	handleSig(ecdsaSig.sign(text_to_sign, privKeyBuf),pubkey);
 }
 
+function derivePubkey(xPubKey, path){
+    var hdPubKey = new Bitcore.HDPublicKey(xPubKey);
+    return hdPubKey.derive(path).publicKey.toBuffer().toString("base64");
+}
+
 var signer = {
 	readSigningPaths: function(conn, address, handleLengthsBySigningPaths){
 		handleLengthsBySigningPaths({r: constants.SIG_LENGTH});

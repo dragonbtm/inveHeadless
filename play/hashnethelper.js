@@ -18,7 +18,7 @@ class HashnetHelper {
                 let message = JSON.stringify(unit);
                 console.log("sending unit:", message);
                 //往共识网发送交易
-                webHelper.httpPost(getUrl(localfullnode, '/v1/sendmsg'), null, buildData({message}), callback);
+                webHelper.httpPost(getUrl(localfullnode.ip+":"+localfullnode.httpPort, '/v1/sendmsg'), null, buildData({message}), callback);
             })
         } catch (e) {
             //处理失效的局部全节点
@@ -45,13 +45,12 @@ class HashnetHelper {
 
     }
 
-    static  getLocalfullnodeList(address,pubkey) {
+    static  getLocalfullnodeList(address,pubkey,cb2) {
         try {
             //从种子节点那里拉取局部全节点列表
-            webHelper.httpPost(seed + '/v1/getlocalfullnodes', null, buildData({pubkey}),function (localfullnodeListMessageRes) {
-                let bError = !!JSON.stringify(localfullnodeListMessageRes).match(/^error/i);
+            webHelper.httpPost(seed + '/v1/getlocalfullnodes', null, buildData({pubkey}),(bError,localfullnodeListMessageRes)=> {
                 if(bError) return [];
-                let localfullnodeListMessage = localfullnodeListMessageRes;
+                let localfullnodeListMessage = JSON.parse(localfullnodeListMessageRes);
                 let localfullnodeList = localfullnodeListMessage.data;
                 if (localfullnodeListMessage.code == 200 && localfullnodeList != '') {
                     localfullnodeList = JSON.parse(localfullnodeList);
@@ -59,7 +58,7 @@ class HashnetHelper {
                         let l = localfullnodeList[i].ip + ':' + localfullnodeList[i].httpPort;
                         localfullnodes.push(l)
                     }
-                    return localfullnodeList;
+                    return cb2(localfullnodeList);
                 }
                 else {
                     //如果没有拉取到，则返回空数组。
