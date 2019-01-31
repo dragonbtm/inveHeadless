@@ -37,11 +37,12 @@ class WebHelper {
                 .end(function (err, res) {
                     if (err) {
                         reject(err);
-                        cb(err);
                         return;
                     }
                     if(cb != null){
+                        resolve(res.text);
                         cb(err,res.text);
+                        return;
                     }
                     resolve(res.text);
                 });

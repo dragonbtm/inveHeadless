@@ -131,25 +131,19 @@ function initRPC() {
                                             let flag = require("core/signature").verify(buf_to_sign,signature,obj.pubkey);
                                             console.log("==========result",flag)
 
-                                            hashnethelper.sendMessageTry(obj,pubkey,(err,res)=>{
+                                            hashnethelper.sendMessageTry(obj,pubkey).then((data)=>{
+												console.log(data);
 
-                                                if(err) {
-                                                	console.log(err);
+												let result = JSON.parse(data);
+                                                if(result.code != 200) {
+                                                    console.log(result);
                                                     cb(err,"faild");
                                                 }else{
-                                                    var res = JSON.parse(res);
-                                                    if(res.code == 200) {
-                                                        client.set(key,start_time,redis.print);
-                                                        cb(null,signature);
-                                                    }else {
-                                                    	console.log(res.data);
-                                                        cb("faild");
-                                                    }
-
+													client.set(key,start_time,redis.print);
+													cb(null,signature);
                                                 }
                                                 unlock();
-                                            });
-
+											});
 
 
                                         });
