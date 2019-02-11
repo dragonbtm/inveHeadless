@@ -4,7 +4,7 @@
 // const rpc = require("./Hashnet").one.inve.rpc;
 const webHelper = require("./webhelper.js");
 const conf = require("../conf")
-const seed ="http://18.236.139.151:25003";
+const seed ="http://54.218.66.131:25003";
 const secrethelper = require("./secrethelper.js");
 const localfullnodes = [];
 //与共识网交互的类
